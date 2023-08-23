@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<apikit:config outboundHeadersMapName="outboundHeadersMapName" httpStatusVarName="httpStatus" doc:name="Router" doc:id="0ec9acc9-2766-46f9-9029-c404a1d0129b" name="AerodromConfig" api="aerodrom.raml" parser="RAML">
+		<apikit:flow-mappings >
+			<apikit:flow-mapping resource="/avion" action="get" flow-ref="get:\avion:Aerodrom-config" />
+			<apikit:flow-mapping resource="/pasos" action="get" flow-ref="get:\pasos:Aerodrom-config" />
+			<apikit:flow-mapping resource="/sletanje" action="get" flow-ref="get:\sletanje:Aerodrom-config" />
+			<apikit:flow-mapping resource="/karta" action="get" flow-ref="get:\karta:Aerodrom-config" />
+			<apikit:flow-mapping resource="/prtljag" action="get" flow-ref="get:\prtljag:Aerodrom-config" />
+			<apikit:flow-mapping resource="/let" action="get" flow-ref="get:\let:Aerodrom-config" />
+			<apikit:flow-mapping resource="/putnik" action="get" flow-ref="get:\putnik:Aerodrom-config" />
+			<apikit:flow-mapping resource="/pasos" action="post" content-type="application/json" flow-ref="post:\pasos:application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/sletanje" action="post" content-type="application/json" flow-ref="post:\sletanje:application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/poletanje" action="post" content-type="application/json" flow-ref="insertPoletanje" />
+			<apikit:flow-mapping resource="/prtljag" action="post" content-type="application/json" flow-ref="post:\prtljag:application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/putnik" action="post" content-type="application/json" flow-ref="post:\putnik:application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/let" action="post" content-type="application/json" flow-ref="post:\let:application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/karta" action="post" content-type="application/json" flow-ref="post:\karta:application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/avion/{ID}" action="get" flow-ref="get:\avion\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/poletanje/{ID}" action="get" flow-ref="get:\poletanje\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/sletanje/{ID}" action="get" flow-ref="get:\sletanje\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/pasos/{ID}" action="get" flow-ref="get:\pasos\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/prtljag/{ID}" action="get" flow-ref="getPrtljagByID" />
+			<apikit:flow-mapping resource="/putnik/{ID}" action="get" flow-ref="get:\putnik\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/karta/{ID}" action="get" flow-ref="getKartaByID" />
+			<apikit:flow-mapping resource="/let/{ID}" action="get" flow-ref="get:\let\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/poletanje" action="get" flow-ref="get:\poletanje:Aerodrom-config" />
+			<apikit:flow-mapping resource="/avion/{ID}" action="delete" flow-ref="deleteAvion" />
+			<apikit:flow-mapping resource="/avion" action="post" content-type="application/json" flow-ref="post:\avion:application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/sletanje/{ID}" action="delete" flow-ref="delete:\sletanje\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/karta/{ID}" action="delete" flow-ref="delete:\karta\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/pasos/{ID}" action="delete" flow-ref="delete:\pasos\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/putnik/{ID}" action="delete" flow-ref="delete:\putnik\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/let/{ID}" action="delete" flow-ref="delete:\let\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/prtljag/{ID}" action="delete" flow-ref="delete:\prtljag\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/poletanje/{ID}" action="delete" flow-ref="delete:\poletanje\(ID):Aerodrom-config" />
+			<apikit:flow-mapping resource="/avion/{ID}" action="put" content-type="application/json" flow-ref="put:\avion\(ID):application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/let/{ID}" action="put" content-type="application/json" flow-ref="put:\let\(ID):application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/putnik/{ID}" action="put" content-type="application/json" flow-ref="put:\putnik\(ID):application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/pasos/{ID}" action="put" content-type="application/json" flow-ref="put:\pasos\(ID):application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/poletanje/{ID}" action="put" content-type="application/json" flow-ref="put:\poletanje\(ID):application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/sletanje/{ID}" action="put" content-type="application/json" flow-ref="put:\sletanje\(ID):application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/prtljag/{ID}" action="put" content-type="application/json" flow-ref="put:\prtljag\(ID):application\json:Aerodrom-config" />
+			<apikit:flow-mapping resource="/karta/{ID}" action="put" content-type="application/json" flow-ref="put:\karta\(ID):application\json:Aerodrom-config" />
+		</apikit:flow-mappings>
+	</apikit:config>
+	<flow name="interfaceFlow" doc:id="6d7816ac-b822-4ef0-a2fb-2a9713530987" >
+		<http:listener doc:name="Listener" doc:id="19d17d0c-e3b0-4ea6-8745-26e9bdd2830b" config-ref="HTTP_Listener_config" path="/api/*"/>
+		<apikit:router doc:name="APIkit Router" doc:id="eb98ff9a-cb9b-46c1-bec9-56882c988db5" config-ref="AerodromConfig"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="50f16c6b-9872-47b6-a32f-4fb61affe0ff" type="APIKIT:BAD_REQUEST">
+				<ee:transform doc:name="Transform Message" doc:id="dcfd5fec-a5f4-4bb2-b3e4-ed0f6573803c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="933a3657-8aa3-4ce7-ac1d-2f0d224d8845" type="APIKIT:NOT_FOUND">
+				<ee:transform doc:name="Transform Message" doc:id="8aed65c8-c20a-4b23-9ca9-e642ae27f6e9" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8ec67ea1-a379-4bf1-8a98-fb5218820f30" type="APIKIT:METHOD_NOT_ALLOWED">
+				<ee:transform doc:name="Transform Message" doc:id="83c9d16d-ce6b-419d-af91-d242b45966cf" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2bed3b0c-b0d0-4562-9190-5543640497c5" type="APIKIT:NOT_ACCEPTABLE">
+				<ee:transform doc:name="Transform Message" doc:id="c50d2542-379b-476c-9ce5-e27296131c07" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="86e24040-7c1b-4e05-9d2d-b831d3fc9234" type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+				<ee:transform doc:name="Transform Message" doc:id="3e5cde8d-4aa0-42b8-9889-f7e45e117e25" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f00ff1d3-8a52-4104-8a93-c709fc99edc0" type="APIKIT:NOT_IMPLEMENTED">
+				<ee:transform doc:name="Transform Message" doc:id="882145b7-a6ba-42f5-b743-33f841a41cf9" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="Aerodrom-console" doc:id="8f5e6b9a-31c6-4c93-a099-a73f066a8d54" >
+		<http:listener doc:name="Listener" doc:id="7fb5ada3-d317-4a5f-b43a-368bb15fb7a0" config-ref="HTTP_Listener_config" path="/console/*"/>
+		<apikit:console doc:name="APIkit Console" doc:id="ea478b68-0331-4db3-acc4-ec5938a55c70" config-ref="AerodromConfig"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="854e119b-10d1-4172-8c75-a3a9b375b1b6" type="APIKIT:NOT_FOUND">
+				<ee:transform doc:name="Transform Message" doc:id="387e260f-b3ee-4fad-b811-6d4b843739ef" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="get:\avion:Aerodrom-config" doc:id="bf041a5b-ed07-43e9-891a-21e9b2a76ffb" >
+		<flow-ref doc:name="Flow Reference" doc:id="ae02fb75-7a90-4ede-96eb-79328b627441" name="getAllAvion"/>
+	</flow>
+	<flow name="get:\poletanje:Aerodrom-config" doc:id="5bfbb744-81c9-4f9e-a74a-855cb7e5cd16" >
+		<flow-ref doc:name="Flow Reference" doc:id="711a91b8-0433-4e21-b1ba-34b949b575e9" name="getAllPoletanje"/>
+	</flow>
+	<flow name="get:\sletanje:Aerodrom-config" doc:id="adeb6886-6b29-4628-a05a-b2a2069f4ab2" >
+		<flow-ref doc:name="Flow Reference" doc:id="bcba1a9b-292b-4792-8a88-ee3ebe8d4ae1" name="getAllSletanje"/>
+	</flow>
+	<flow name="get:\karta:Aerodrom-config" doc:id="17c5aedf-1ca7-4781-b70c-2d494cf34b8e" >
+		<flow-ref doc:name="Flow Reference" doc:id="fd5de06f-3184-4400-9cac-f2964d72d142" name="getAllKarta"/>
+	</flow>
+	<flow name="get:\pasos:Aerodrom-config" doc:id="a486c870-1254-485c-9639-d8797750e690" >
+		<flow-ref doc:name="Flow Reference" doc:id="adc2b8c0-4ea0-4131-8498-5a29f33e46d7" name="getAllPasos"/>
+	</flow>
+	<flow name="get:\prtljag:Aerodrom-config" doc:id="ee4a2b2f-033c-4545-8ecc-71c95bb192c3" >
+		<flow-ref doc:name="Flow Reference" doc:id="4743d0f3-3796-4781-801a-49776b6bec41" name="getAllPrtljag"/>
+	</flow>
+	<flow name="get:\putnik:Aerodrom-config" doc:id="9b61409c-468c-40ea-811a-333c6374fed5" >
+		<flow-ref doc:name="Flow Reference" doc:id="781b90d5-7eb5-4b06-9d3d-0b487f9098e5" name="getAllPutnik"/>
+	</flow>
+	<flow name="get:\let:Aerodrom-config" doc:id="065de25f-a1cd-4a7e-a454-f625e74d713e" >
+		<flow-ref doc:name="Flow Reference" doc:id="6c22dcff-20c5-4132-b48b-6fb4aec05428" name="getAllLet"/>
+	</flow>
+	<flow name="get:\avion\(ID):Aerodrom-config" doc:id="15b22300-2787-4824-a910-a8cd9a65e86e" >
+		<flow-ref doc:name="Flow Reference" doc:id="65bb09bc-764e-44c8-a5ec-99b7f297e540" name="getAvionByID"/>
+	</flow>
+	<flow name="get:\sletanje\(ID):Aerodrom-config" doc:id="a4824727-ddd6-42cc-9135-d25dd0fc5042" >
+		<flow-ref doc:name="Flow Reference" doc:id="3811d756-90b4-4b72-b184-cd75a769e524" name="getBySletanjeID"/>
+	</flow>
+	<flow name="get:\poletanje\(ID):Aerodrom-config" doc:id="c2d6e146-f94e-454f-a80c-d8f1590f884c" >
+		<flow-ref doc:name="Flow Reference" doc:id="1038bb65-256c-40c1-94e0-3c483a66c775" name="getByPoletanjeID"/>
+	</flow>
+	<flow name="get:\pasos\(ID):Aerodrom-config" doc:id="aa060e1d-f2c3-4a02-880e-85c1eb334845" >
+		<flow-ref doc:name="Flow Reference" doc:id="fd846a1b-e37b-4a4a-91da-2d67e10f2584" name="getPasosByID"/>
+	</flow>
+	<flow name="get:\prtljag\(ID):Aerodrom-config" doc:id="9cef39c5-8718-4472-b763-575d52ed11fd" >
+		<flow-ref doc:name="Flow Reference" doc:id="863a410c-f30e-4706-ab01-13a191801d2d" name="getPrtljagByID"/>
+	</flow>
+	<flow name="get:\let\(ID):Aerodrom-config" doc:id="e5da5a10-8f89-4fb8-a478-624f454a992e" >
+		<flow-ref doc:name="Flow Reference" doc:id="fcc65220-9c67-4655-97b2-1f2e2cb31273" name="getLetByID"/>
+	</flow>
+	<flow name="get:\karta\(ID):Aerodrom-config" doc:id="f691faf8-fda6-4c95-9379-814dd9832f5c" >
+		<flow-ref doc:name="Flow Reference" doc:id="63762d01-a1bd-4b9a-a19b-5fb433b20de0" name="getKartaByID"/>
+	</flow>
+	<flow name="get:\putnik\(ID):Aerodrom-config" doc:id="791e9c90-880b-4ca4-9dff-6724fca75f50" >
+		<flow-ref doc:name="Flow Reference" doc:id="21abd961-97bd-42b6-bae3-5e7eaefb07a4" name="getPutnikByID"/>
+	</flow>
+	<flow name="post:\avion:application\json:Aerodrom-config" doc:id="ab71b2d5-1c9d-4bda-9afc-77f403b33003" >
+		<flow-ref doc:name="Flow Reference" doc:id="45aff476-e5ff-453d-a09b-07a7e47aa377" name="insertAvion"/>
+	</flow>
+	<flow name="post:\pasos:application\json:Aerodrom-config" doc:id="32dce5a1-072c-4547-bec2-13375fd07c9c" >
+		<flow-ref doc:name="Flow Reference" doc:id="33d53bdd-ca7a-4efa-8824-102e4476f464" name="insertPasos"/>
+	</flow>
+	<flow name="post:\sletanje:application\json:Aerodrom-config" doc:id="2bd9b3ec-32ed-4d3e-80ff-6cfb2cc88d0e" >
+		<flow-ref doc:name="Flow Reference" doc:id="df4b26f4-4ae2-448c-b971-e0db6f80e2dd" name="insertSletanje"/>
+	</flow>
+	<flow name="post:\poletanje:application\json:Aerodrom-config" doc:id="6b77769d-bb7c-409c-ac9f-27c52244c264" >
+		<flow-ref doc:name="Flow Reference" doc:id="8279f0fd-bfb9-45e3-8cfd-f040e8efd8b7" name="insertPoletanje"/>
+	</flow>
+	<flow name="post:\prtljag:application\json:Aerodrom-config" doc:id="c507d318-d412-4cd3-ab06-2466690c9c48" >
+		<flow-ref doc:name="Flow Reference" doc:id="1dfc9b3e-c83e-4052-8d5c-50afb4527925" name="insertPrtljag"/>
+	</flow>
+	<flow name="post:\putnik:application\json:Aerodrom-config" doc:id="86f99470-1cd4-44a3-99e9-144bfe5dbe40" >
+		<flow-ref doc:name="Flow Reference" doc:id="d6a4fc4d-ea4a-437e-b48b-be1f54f60927" name="insertPutnik"/>
+	</flow>
+	<flow name="post:\let:application\json:Aerodrom-config" doc:id="2f8b9429-c998-404f-be21-c51ed27f2c87" >
+		<flow-ref doc:name="Flow Reference" doc:id="743b2df7-11d9-4d05-ae2e-46f8031b975a" name="insertLet"/>
+	</flow>
+	<flow name="post:\karta:application\json:Aerodrom-config" doc:id="307d6e7e-892d-44cf-806d-badf80c269b8" >
+		<flow-ref doc:name="Flow Reference" doc:id="5c16809f-a1db-4af9-99c8-5b786f6e948e" name="insertKarta"/>
+	</flow>
+	<flow name="delete:\avion\(ID):Aerodrom-config" doc:id="797c4c30-e2e9-471b-adae-623b7aa19e12" >
+		<flow-ref doc:name="Flow Reference" doc:id="f56aeb14-c196-4601-a5da-b2aefef2f5ab" name="deleteAvion"/>
+	</flow>
+	<flow name="delete:\sletanje\(ID):Aerodrom-config" doc:id="d44e4efe-7187-45d8-a9a8-de56fb012368" >
+		<flow-ref doc:name="Flow Reference" doc:id="c04e3513-379c-4c49-a6f8-ccbdb138415b" name="deleteSletanje"/>
+	</flow>
+	<flow name="delete:\poletanje\(ID):Aerodrom-config" doc:id="3e122bb2-8e4a-4f37-82e6-81f59d17cce8" >
+		<flow-ref doc:name="Flow Reference" doc:id="2271ca84-64c8-4a59-bfd8-27a51ae0e6c1" name="deletePoletanje"/>
+	</flow>
+	<flow name="delete:\pasos\(ID):Aerodrom-config" doc:id="159257b6-fb9c-48cb-9e69-8c342900be71" >
+		<flow-ref doc:name="Flow Reference" doc:id="b56b5feb-df5a-4173-a9f5-863b080e69e3" name="deletePasos"/>
+	</flow>
+	<flow name="delete:\let\(ID):Aerodrom-config" doc:id="6e319697-942a-42bf-8562-0c3d50d659d5" >
+		<flow-ref doc:name="Flow Reference" doc:id="5befec3e-5f02-498b-956b-ecba87b884c9" name="deleteLet"/>
+	</flow>
+	<flow name="delete:\prtljag\(ID):Aerodrom-config" doc:id="5ac82272-7ca0-48e4-be58-d4263c3b2163" >
+		<flow-ref doc:name="Flow Reference" doc:id="4e146552-e0c7-49d9-9903-df749e3b4aa8" name="deletePrtljag"/>
+	</flow>
+	<flow name="delete:\karta\(ID):Aerodrom-config" doc:id="8a804bf0-f945-4d7c-8845-3ae1d74583d8" >
+		<flow-ref doc:name="Flow Reference" doc:id="90f686d1-2cff-4e96-87f7-da8cd48dbe3b" name="deleteKarta"/>
+	</flow>
+	<flow name="delete:\putnik\(ID):Aerodrom-config" doc:id="02788492-2d0b-45bd-b9ea-877dc802a5cf" >
+		<flow-ref doc:name="Flow Reference" doc:id="70a40df7-8125-43b6-909c-c10ad12cd194" name="deletePutnik"/>
+	</flow>
+	<flow name="put:\avion\(ID):application\json:Aerodrom-config" doc:id="faeb1741-2945-4b28-88d8-a20c4c5055c6" >
+		<flow-ref doc:name="Flow Reference" doc:id="35a18ad6-84ab-47c4-8c6c-454f9395ed87" name="updateAvion"/>
+	</flow>
+	<flow name="put:\poletanje\(ID):application\json:Aerodrom-config" doc:id="330d53b0-7597-4188-8257-80a0756fb445" >
+		<flow-ref doc:name="Flow Reference" doc:id="4b7807a4-0886-4edc-9c52-e070ec88788b" name="updatePoletanje"/>
+	</flow>
+	<flow name="put:\sletanje\(ID):application\json:Aerodrom-config" doc:id="1197ff90-69e4-4e79-b67b-62a315f949e3" >
+		<flow-ref doc:name="Flow Reference" doc:id="1bb00eba-b881-4629-9d58-4118a3aadd13" name="updateSletanje"/>
+	</flow>
+	<flow name="put:\pasos\(ID):application\json:Aerodrom-config" doc:id="adc99093-167c-4b19-8179-18260f6b0aee" >
+		<flow-ref doc:name="Flow Reference" doc:id="670b4c58-6020-4beb-9a8c-33de130e7987" name="updatePasos"/>
+	</flow>
+	<flow name="put:\putnik\(ID):application\json:Aerodrom-config" doc:id="21859275-2123-46d9-9d2e-c6849b47150f" >
+		<flow-ref doc:name="Flow Reference" doc:id="f1d7d701-1e91-44e4-b3ef-a28e1b3ef843" name="updatePutnik"/>
+	</flow>
+	<flow name="put:\prtljag\(ID):application\json:Aerodrom-config" doc:id="a479fe40-9640-4eef-9c71-774cf59cb4d4" >
+		<flow-ref doc:name="Flow Reference" doc:id="d66b4609-84ce-4200-b238-be2d92247667" name="updatePrtljag"/>
+	</flow>
+	<flow name="put:\karta\(ID):application\json:Aerodrom-config" doc:id="141a7d5d-0779-4c0f-a969-8e79722fa034" >
+		<flow-ref doc:name="Flow Reference" doc:id="bb6dc017-ae4f-4d3b-8c11-8185dfb5bc1c" name="updateKarta"/>
+	</flow>
+	<flow name="put:\let\(ID):application\json:Aerodrom-config" doc:id="1da66bc9-0148-479e-a3ad-272cb50a51a0" >
+		<flow-ref doc:name="Flow Reference" doc:id="0bcee97d-ef9d-45b5-9cbc-136aa575af74" name="updateLet"/>
+	</flow>
+</mule>

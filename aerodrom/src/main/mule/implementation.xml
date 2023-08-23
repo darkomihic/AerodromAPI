@@ -1,0 +1,1856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="implementationFlow" doc:id="f2fad036-5ee4-4feb-885b-45962fc35b1d" >
+		<db:listener doc:name="On Table Row" doc:id="cdaa3038-a277-42a4-9d64-e04c5ff0666e" table="avion" config-ref="Database_Config" watermarkColumn="AvionID" idColumn="AvionID">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</db:listener>
+		<choice doc:name="Choice" doc:id="d483c8a4-445f-4cb8-8014-875ae43667f1" >
+			<when expression="#[payload.Model == 'Boing 747']">
+				<ee:transform doc:name="Transform Message" doc:id="c4094cf9-ad74-41c0-887d-ef94b6fbabca" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<file:write doc:name="bulgarianerp" doc:id="606bf0e2-b3ba-41a1-868b-1987676ec479" config-ref="bulgarianerp" path="bulgarianerp/bulgarianerp.json" mode="APPEND"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="222cac54-7d43-4b5c-93a0-e65a1556d27a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<file:write doc:name="internalerp" doc:id="ea493cf5-3cf8-4662-833d-38889c00eda7" config-ref="internalerp" path="internalerp/internalerp" mode="APPEND"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="getAllAvion" doc:id="1ace2fbf-27dd-4cb1-adc5-c163fab45480" >
+		<db:select doc:name="select" doc:id="4cf8b5b8-8359-4e75-a782-49e6a57ef01c" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM Avion;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="032b32ef-57fb-45ea-9507-fa2966da8136" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	AvionID: payload01.AvionID,
+	BrojClanovaPosade: payload01.BrojClanovaPosade,
+	BrojLeta: payload01.BrojLeta,
+	PutniciBusiness: payload01.PutniciBusiness,
+	Model: payload01.Model,
+	Vlasnik: payload01.Vlasnik,
+	PutniciEconomy: payload01.PutniciEconomy
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllPoletanje" doc:id="073c638b-19d2-4043-8148-173e5cb2a567" >
+		<db:select doc:name="Select" doc:id="780646e7-7f06-4c75-a2c8-63aace02ee9d" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM POLETANJE;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="c697288e-0122-47a5-aae6-88d2dbf6f777" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	PoletanjeID: payload01.PoletanjeID,
+	Datum: payload01.Datum,
+	Gate: payload01.Gate,
+	Grad: payload01.Grad
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllSletanje" doc:id="b3c07232-c468-44d9-b509-a273d0d41104" >
+		<db:select doc:name="Select" doc:id="67577716-3799-47cf-9d12-de6509913cc4" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM Sletanje;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="6fddb917-336e-4339-b7b3-a9f7c1ff0fb6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Datum: payload01.Datum,
+	SletanjeID: payload01.SletanjeID,
+	Gate: payload01.Gate,
+	Grad: payload01.Grad
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllPasos" doc:id="da7f9617-7388-4ee0-8e52-36618df205e4" >
+		<db:select doc:name="Select" doc:id="00139675-10c5-400f-8f01-b262f93bb5f3" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM Pasos;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="8330f741-67d8-4b06-9c90-0c67e8f836f6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	PasosID: payload01.PasosID,
+	Ime: payload01.Ime,
+	Viza: payload01.Viza,
+	Godine: payload01.Godine default 0,
+	Drzava: payload01.Drzava,
+	Prezime: payload01.Prezime
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllKarta" doc:id="94179fed-6115-4f3d-ad5f-be24e3a88c4d" >
+		<db:select doc:name="Select" doc:id="7cd47f07-cdae-4779-ad59-368b15d511a9" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM Karta;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="9d7f230b-673b-4e02-9912-01047029b886" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	BrojKredKartice: payload01.BrojKredKartice,
+	KartaID: payload01.KartaID,
+	CenaKarte: payload01.CenaKarte,
+	SifraKarte: payload01.SifraKarte,
+	let: payload01.Let,
+	Sediste: payload01.Sediste,
+	Klasa: payload01.Klasa
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllPrtljag" doc:id="27685b4d-1d9e-45a3-ad81-3ffd29ada51c">
+		<db:select doc:name="Select" doc:id="6ccb7b7d-9c15-4ce7-a12c-ca123f1a3e88" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM Prtljag;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="b00185dc-702e-4556-81f6-af6f95c34a05" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	PrtljagID: payload01.PrtljagID,
+	RucniPrtljag: payload01.RucniPrtljag,
+	Tezina: payload01.Tezina,
+	PredjenaKontrola: payload01.PredjenaKontrola,
+	SifraPrtljag: payload01.SifraPrtljag
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllPutnik" doc:id="8b8eeaff-6984-447d-900c-bdb5397da0af" >
+		<db:select doc:name="Select" doc:id="b332f5e5-1504-4fce-8e60-9f18caf2f661" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM Putnik;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="a4879b08-08a0-47fc-bc75-62f333a886bb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	PutnikID: payload01.PutnikID,
+	Ime: payload01.Ime,
+	Prezime: payload01.Prezime,
+	BrojTel: payload01.BrojTel,
+	EMail: payload01.EMail,
+	Godine: payload01.Godine,
+	JMBG: payload01.JMBG,
+	Prtljag: payload01.Prtljag,
+	Pasos: payload01.Pasos,
+	Karta: payload01.Karta
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAllLet" doc:id="bab783d8-574a-4212-84a7-ea783c7f2052" >
+		<db:select doc:name="Select" doc:id="9e9dbbeb-d272-44ac-9ea0-6a8371fbd21e" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM Let;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="8e7144a1-2ad5-4f0e-9227-91fae2b8a975" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	LetID: payload01.LetID,
+	NazivLinije: payload01.NazivLinije,
+	SifraLeta: payload01.SifraLeta,
+	Avion: payload01.Avion,
+	Poletanje: payload01.Poletanje,
+	Sletanje: payload01.Sletanje
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getAvionByID" doc:id="71afeef5-8082-4956-a520-e938fa05e810" >
+		<db:select doc:name="Select" doc:id="a859b29b-8ce6-4864-885f-b719d26243a7" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from avion
+where AvionID = :AvionID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'AvionID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="99df1d3a-ed42-4eab-abbb-990ac58eee9e" value="#[payload.AvionID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="0ece651c-4381-40c9-b315-365519999863" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	AvionID: payload01.AvionID,
+	Model: payload01.Model,
+	BrojLeta: payload01.BrojLeta,
+	PutniciEconomy: payload01.PutniciEconomy,
+	PutniciBusiness: payload01.PutniciBusiness,
+	BrojClanovaPosade: payload01.BrojClanovaPosade,
+	Vlasnik: payload01.Vlasnik
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="179e3df0-8b65-42d1-84f8-5b32925f88bc" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="a0c37599-9817-4ce2-92eb-1d9e9089365b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji avion sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="993d03aa-d789-4e9a-a87c-f0f17d6d25c9" variableName="httpStatus"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="getBySletanjeID" doc:id="b17c223f-1c92-418a-9856-1ac8e05f801f" >
+		<db:select doc:name="Select" doc:id="4002d9d0-ade0-4d75-a92f-764237a01ee5" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Sletanje
+where SletanjeID = :SletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'SletanjeID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="f410e576-0951-4da8-907f-7af1b12651be" value="#[payload.SletanjeID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="9e0739f0-f583-4a20-9206-818801364bbb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	SletanjeID: payload01.SletanjeID,
+	Grad: payload01.Grad,
+	Datum: payload01.Datum,
+	Gate: payload01.Gate
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5a118ac3-ee69-41cf-80a0-9116c17d20a6" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="01f99946-8d97-412d-ae09-714449aa89f1" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji sletanje sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="02682729-14f1-4a09-aec0-ccab017a4e0c" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="getByPoletanjeID" doc:id="331df286-bce9-4ad2-b65d-8c181c7a4ae3" >
+		<db:select doc:name="Select" doc:id="5509d6f5-2ced-4fec-b3c3-19c5fd6c65c8" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Poletanje
+where PoletanjeID = :PoletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PoletanjeID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="c0ac1b46-44ff-4987-a5d3-7acccfb23a88" value="#[payload.PoletanjeID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="8dfa4339-615b-49a4-8c0e-07ca9ac5d25c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	PoletanjeID: payload01.PoletanjeID,
+	Grad: payload01.Grad,
+	Datum: payload01.Datum,
+	Gate: payload01.Gate
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2814b0b8-880e-42cb-944c-f48a231e0379" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="c2abbb0d-28c5-4742-9c44-8678851cae16" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji poletanje sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="da1caab6-e4bb-4eda-bb3e-ec4b150f1442" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="getPasosByID" doc:id="dd3d0b43-386b-46e1-8fd4-fb87cd2f4f74" >
+		<db:select doc:name="Select" doc:id="673cad59-4694-4ed7-97ae-9ccb2e5ff3d8" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Pasos
+where PasosID = :PasosID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PasosID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="db522f51-3dd6-4b9d-9bf9-1d87de48022c" value="#[payload.PasosID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="43b5a084-979d-4c9b-b1a2-e2566bb8a174" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	PasosID: payload01.PasosID,
+	Viza: payload01.Viza,
+	Ime: payload01.Ime,
+	Drzava: payload01.Drzava,
+	Prezime: payload01.Prezime,
+	Godine: payload01.Godine
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d2dd1383-957a-4fd0-ada9-e2112fd581aa" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="10c537f6-0e46-4dcc-bf7f-603b69ba214f" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji pasos sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="8d3b652e-4410-45c9-a70c-99b7b6c84b0f" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="getPrtljagByID" doc:id="9795eee6-e4b4-4a9d-b3ca-d819fb5c6a7b" >
+		<db:select doc:name="Select" doc:id="d6ed5276-a3e2-47eb-9cce-23ce2236c7d7" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Prtljag
+where PrtljagID = :PrtljagID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PrtljagID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="9bdb2990-c117-46e7-8476-dd93d68e310c" value="#[payload.PrtljagID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="e50fb598-b894-4f2f-8312-ea2ae9240626" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	PrtljagID: payload01.PrtljagID,
+	RucniPrtljag: payload01.RucniPrtljag,
+	Tezina: payload01.Tezina,
+	PredjenaKontrola: payload01.PredjenaKontrola,
+	SifraPrtljag: payload01.SifraPrtljag
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c9d1311a-6b1a-4b04-8d5b-e8e82fd4a6c7" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="08fa7b20-f602-4b30-af91-9d468830bbba" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji prtljag sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="bd785a54-b6fd-4af3-9290-8e1d06798b30" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="getLetByID" doc:id="536f7f13-47c5-4411-afd7-324647380a85" >
+		<db:select doc:name="Select" doc:id="08e97545-09a2-4c5c-8800-1cc9362e751a" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Let
+where LetID = :LetID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'LetID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="32fdee64-bfc2-48c7-a1c7-cec3753333c5" value="#[payload.LetID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="230b169d-b265-4dbf-a5da-0655ba6b7248" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	LetID: payload01.LetID,
+	NazivLinije: payload01.NazivLinije,
+	SifraLeta: payload01.SifraLeta,
+	Avion: payload01.Avion,
+	Poletanje: payload01.Poletanje,
+	Sletanje: payload01.Sletanje
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="cffd062a-1ccc-4d65-b76c-9a053b9c12a0" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="672688f3-cde5-4282-b090-76e438b33fa6" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji let sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="f6362a34-de64-407b-bf74-2088dac299e7" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="getKartaByID" doc:id="55496d19-9b83-4ad5-81af-7156534061e3" >
+		<db:select doc:name="Select" doc:id="62afcc8a-ea7c-42e7-b221-5dffc979e6cb" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Karta
+where KartaID = :KartaID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'KartaID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="ed1772eb-43ca-49d0-967f-e54c924172dd" value="#[payload.KartaID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="d1d67f43-dee2-4d6b-bdd0-242d534a203d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c7e56bcf-4952-46ab-b822-3411b873962b" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="754e3e13-5e94-4bf7-bf37-063b20a9c9de" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji karta sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="dd38f25a-cdda-4e21-b780-c7e155473793" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="getPutnikByID" doc:id="b6a333f0-baec-43f4-9832-d1b6dba0c922" >
+		<db:select doc:name="Select" doc:id="1c552d1f-be77-4e3a-9b0a-931fb45813a7" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Putnik
+where PutnikID = :PutnikID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PutnikID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="3acc4b31-57e9-487c-90d0-6ad2f586bc03" value="#[payload.PutnikID]"/>
+		<ee:transform doc:name="Transform Message" doc:id="85e1f686-1a23-4d6b-a03b-e34d16d7ca02" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ce0c782f-a790-417f-9ae7-095242ab9c15" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="d775750f-b830-4349-8a14-50b4385daef9" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji putnik sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="Set Variable" doc:id="c3b7da4c-31da-4ab5-a229-65dc1093561b" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertAvion" doc:id="6cad6306-762e-4e06-babb-6acd38a01f74" >
+		<set-variable value="#[message.payload]" doc:name="Avion" doc:id="ce4cba6f-19ff-406d-bc74-bd4d45095eb6" variableName="Avion"/>
+		<db:select doc:name="Select" doc:id="1857bea0-73d4-4c79-82f8-2194ac75c9e4" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Avion
+where AvionID = :AvionID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'AvionID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="0fa257a4-93f8-4722-9fcb-6d73d52cc511" value="#[payload.AvionID]"/>
+		<db:insert doc:name="Insert" doc:id="9abb8179-04b9-4af1-88a0-e587a1d0180d" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Avion(Model,BrojLeta, PutniciEconomy, PutniciBusiness, BrojClanovaPosade, Vlasnik) 
+values(:Model,:BrojLeta,:PutniciEconomy,:PutniciBusiness,:BrojClanovaPosade, :Vlasnik);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Model' : vars.avion.Model,
+	'BrojLeta' : vars.avion.BrojLeta, 
+	'PutniciEconomy' : vars.avion.PutniciEconomy,
+	'PutniciBusiness' : vars.avion.PutniciBusiness,
+	'BrojClanovaPosade' : vars.avion.BrojClanovaPosade, 
+	'Vlasnik' : vars.avion.Vlasnik
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="88a2def9-de88-4a64-ba94-42a7a47a5e46" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi avion!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="15a92a7a-4916-49f1-b4e3-a52a48ac6865" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="66894430-f1df-4043-adf3-cb29d765c3d8" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Avion sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="38b99215-8282-44b0-9388-93b34aad7e1f" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertPasos" doc:id="f581c601-f267-40bc-96ec-6d5edf8dce0e" >
+		<set-variable value="#[message.payload]" doc:name="Pasos" doc:id="d8f43282-151e-412e-8e24-3ebb25d083ff" variableName="Pasos"/>
+		<db:select doc:name="Select" doc:id="0d421c15-b200-46f8-ba88-407e9b13b57f" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Pasos
+where Viza = :Viza and Ime = :Ime and Drzava = :Drzava and 
+	  Prezime = :Prezime and Godine = :Godine]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Viza' : vars.pasos.Viza,
+	'Ime' : vars.pasos.Ime, 
+	'Drzava' : vars.pasos.Drzava,
+	'Prezime' : vars.pasos.Prezime,
+	'Godine' : vars.pasos.Godine
+	
+}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="7e991ba7-c00d-40cf-a22b-54f25d08dc0a" value="#[payload.Viza]"/>
+		<db:insert doc:name="Insert" doc:id="266a9e8d-2788-4427-971c-86ef0a3239c4" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Pasos(Viza, Ime, Drzava, Prezime, Godine) 
+values(:Viza,:Ime,:Drzava,:Prezime,:Godine);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Viza' : vars.pasos.Viza,
+	'Ime' : vars.pasos.Ime, 
+	'Drzava' : vars.pasos.Drzava,
+	'Prezime' : vars.pasos.Prezime,
+	'Godine' : vars.pasos.Godine
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="12eea940-a893-4d1c-976b-51bee9ecb3f1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi pasos!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ddbfd536-06dc-4d13-a9cc-2b50cc2bf532" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="dcac236b-a68a-4f34-8f69-1d5e894ea52e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Pasos sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="ac53fac0-a6f1-4ba4-b53a-27eec5dcf0c6" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertSletanje" doc:id="cc76f5cb-bdf7-4cc1-8355-7fabcd3daafc" >
+		<set-variable value="#[message.payload]" doc:name="Sletanje" doc:id="8efd908f-c8b3-4248-86cf-2d3d8d38e0b7" variableName="Sletanje"/>
+		<db:select doc:name="Select" doc:id="04dc33d2-4e5c-40d8-8a2a-ee8dad1ccd75" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Sletanje
+where Grad = :Grad and Datum = :Datum and Gate = :Gate]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.sletanje.Grad,
+	'Datum' : vars.sletanje.Datum, 
+	'Gate' : vars.sletanje.Gate
+	
+}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="7332e486-e1f9-43b3-88d4-06411a0a7c64" value="#[payload.Gate]"/>
+		<db:insert doc:name="Insert" doc:id="87352ee4-bf9f-4d49-80fd-ca44c7d993e0" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Sletanje(Grad, Datum, Gate) values(:Grad,:Datum,:Gate);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.sletanje.Grad,
+	'Datum' : vars.sletanje.Datum, 
+	'Gate' : vars.sletanje.Gate,
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="03014e0a-9002-4fa0-bf39-2e6aa11189f7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novo sletanje!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="def2f58b-d5cc-4d09-863a-52e68a464f44" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="f48fdce9-3100-4782-a678-654ebfe91c21" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Sletanje sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="0c941c86-0276-471e-82dd-d6ea15a269ee" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertPoletanje" doc:id="31944ef2-829e-48e1-b613-36d280833e53" >
+		<set-variable value="#[message.payload]" doc:name="Poletanje" doc:id="5ad09ed9-dd9e-4bb8-a9b6-f8e464979ac2" variableName="Poletanje"/>
+		<db:select doc:name="Select" doc:id="90e550bd-52ec-45f2-95b7-396b9d239b9d" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Poletanje
+where Grad = :Grad and Datum = :Datum and Gate = :Gate]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.poletanje.Grad,
+	'Datum' : vars.poletanje.Datum, 
+	'Gate' : vars.poletanje.Gate
+	
+}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="7814f9ff-9531-4bb6-9c2d-15925e95fe3d" value="#[payload.Gate]"/>
+		<db:insert doc:name="Insert" doc:id="74e22c96-f245-46fc-ab2b-40e1976459ff" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Poletanje(Grad, Datum, Gate) values(:Grad,:Datum,:Gate);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.poletanje.Grad,
+	'Datum' : vars.poletanje.Datum, 
+	'Gate' : vars.poletanje.Gate,
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="fb8eb08b-6c43-4ff6-a95e-066f54c28468" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodato je novo poletanje!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="579d8a0d-b5bf-4104-bf94-91729d8fcba4" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="a63dca75-7968-48e3-8376-11900de29ed2" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Poletanje sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="cc890d69-fbef-4ef1-bfd9-60ee5f053b2e" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertPrtljag" doc:id="945ef3d0-1a86-4a4a-97ea-a741cb97769a" >
+		<set-variable value="#[message.payload]" doc:name="Prtljag" doc:id="a4fb908e-aa21-4510-9178-1b64cc84653c" variableName="Prtljag"/>
+		<db:select doc:name="Select" doc:id="0206bdc7-47ad-4d34-8dd5-953f411875b5" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Prtljag
+where RucniPrtljag = :RucniPrtljag and Tezina = :Tezina and PredjenaKontrola = :PredjenaKontrola and SifraPrtljag=:SifraPrtljag]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'RucniPrtljag' : vars.prtljag.RucniPrtljag,
+	'Tezina' : vars.prtljag.Tezina, 
+	'PredjenaKontrola' : vars.prtljag.PredjenaKontrola,
+	'SifraPrtljag' : vars.prtljag.SifraPrtljag
+	
+}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="e5706f7f-e9a0-4ec5-943f-595b7ff20b99" value="#[payload.Gate]"/>
+		<db:insert doc:name="Insert" doc:id="6680b57e-5d8e-46b7-b0f1-5ab862e0ce79" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Prtljag(RucniPrtljag, Tezina, PredjenaKontrola, SifraPrtljag) 
+values(:RucniPrtljag, :Tezina, :PredjenaKontrola,:SifraPrtljag);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'RucniPrtljag' : vars.prtljag.RucniPrtljag,
+	'Tezina' : vars.prtljag.Tezina, 
+	'PredjenaKontrola' : vars.prtljag.PredjenaKontrola,
+	'SifraPrtljag' : vars.prtljag.SifraPrtljag
+	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="34a4a0f3-2006-48f9-a266-67eac4923209" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi prtljag!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="9b5344f2-2d04-46cb-8d42-28c2609ad708" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="1ebb99d2-6261-44c6-8627-cea481fd0ba1" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Prtljag sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="07c4c9c4-1283-4473-99ed-78cf7c616fdd" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertPutnik" doc:id="a22f4ae4-3148-4d1c-b7bd-263d649bf6c7" >
+		<set-variable value="#[message.payload]" doc:name="Putnik" doc:id="81ef8d50-0fa5-4e4c-a91b-bde60a8ce78f" variableName="Putnik"/>
+		<db:select doc:name="Select" doc:id="c8aea52a-6dca-43fb-b311-689bee1aafe3" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Putnik
+where Ime=:Ime and Prezime=:Prezime and BrojTel=:BrojTel and EMail=:EMail and Godine=:Godine and JMBG=:JMBG and Prtljag=:Prtljag and Pasos=:Pasos and Karta=:Karta
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Ime' : vars.putnik.Ime,
+	'Prezime' : vars.putnik.Prezime, 
+	'BrojTel' : vars.putnik.BrojTel,
+	'EMail' : vars.putnik.EMail,
+	'Godine' : vars.putnik.Godine,
+	'JMBG' : vars.putnik.JMBG,
+	'Prtljag' : vars.putnik.Prtljag,
+	'Pasos' : vars.putnik.Pasos,
+	'Karta' : vars.putnik.Karta
+	
+}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="06684f25-d622-4d1a-9a38-fe81a325b757" value="#[payload.Godine]"/>
+		<db:insert doc:name="Insert" doc:id="f53cf13a-07a2-42e6-b406-57957d3d2c4d" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Putnik(Ime, Prezime, BrojTel, EMail, Godine, JMBG, Prtljag, Pasos, Karta) 
+values(:Ime,:Prezime,:BrojTel,:EMail,:Godine,:JMBG,:Prtljag,:Pasos,:Karta);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'Ime' : vars.putnik.Ime,
+	'Prezime' : vars.putnik.Prezime, 
+	'BrojTel' : vars.putnik.BrojTel,
+	'EMail' : vars.putnik.EMail,
+	'Godine' : vars.putnik.Godine,
+	'JMBG' : vars.putnik.JMBG,
+	'Prtljag' : vars.putnik.Prtljag,
+	'Pasos' : vars.putnik.Pasos,
+	'Karta' : vars.putnik.Karta
+	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="ec579975-f783-4aaa-a530-cc78d5e86449" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi putnik!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="64a12a37-7bdc-4cf0-a638-108ba2b81de8" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="e1c47533-734e-44ec-9dc9-2b8cb2e219af" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Putnik sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="bd9f6a1b-6c50-4fcf-b2ab-aa563d16a0fa" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertLet" doc:id="c859e41b-3e21-430a-8179-b226ab2846fb" >
+		<set-variable value="#[message.payload]" doc:name="Let" doc:id="0adf9e36-fcfa-4b4c-b09b-cb99ece7b259" variableName="Let"/>
+		<db:select doc:name="Select" doc:id="a98886fd-f295-404d-8bb0-259b25366853" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Let
+where NazivLinije=:NazivLinije and SifraLeta=:SifraLeta and Avion=:Avion and Poletanje=:Poletanje and Sletanje=:Sletanje]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'NazivLinije' : vars.let.NazivLinije,
+	'SifraLeta' : vars.let.SifraLeta, 
+	'Avion' : vars.let.Avion,
+	'Poletanje' : vars.let.Poletanje,
+	'Sletanje' : vars.let.Sletanje,
+	
+}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="1c7f2dce-7058-4bfc-ba0f-9012df566b06" value="#[payload.SifraLeta]"/>
+		<db:insert doc:name="Insert" doc:id="138a3d64-d31e-44e5-abba-8c922da1d4ce" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Let(NazivLinije, SifraLeta, Avion, Poletanje, Sletanje) values(:NazivLinije,:SifraLeta,:Avion,:Poletanje,:Sletanje);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'NazivLinije' : vars.let.NazivLinije,
+	'SifraLeta' : vars.let.SifraLeta, 
+	'Avion' : vars.let.Avion,
+	'Poletanje' : vars.let.Poletanje,
+	'Sletanje' : vars.putnik.Sletanje,
+	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="533bdf83-6d7f-4666-8f2e-8d6969e8bf82" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi let!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5a8f41b6-2d97-46b6-a064-575d78e460aa" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="d37df6e3-f597-410f-b458-165396914444" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Let sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="73ec1dd8-4c48-4515-9483-c4f94ff48fc9" variableName="httpStatus"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="insertKarta" doc:id="2e0f838f-539f-4b17-b586-132e647a8321" >
+		<set-variable value="#[message.payload]" doc:name="Karta" doc:id="255aabb5-c463-426f-8427-202f16a18f32" variableName="Karta"/>
+		<db:select doc:name="Select" doc:id="9dc5cfc2-5e15-4045-84df-e5ef64575c36" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Karta
+where KartaID = :KartaID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'KartaID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-null doc:name="Is null" doc:id="83d13733-7330-4307-b77e-e69ae8219f00" value="#[payload.KartaID]"/>
+		<db:insert doc:name="Insert" doc:id="9b4c1a29-9730-4d2d-937c-a57547d850ac" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO Karta(CenaKarte, BrojKredKartice, Klasa, Sediste, SifraKarte, Let) values(:CenaKarte,:BrojKredKartice,:Klasa,:Sediste,:SifraKarte,:Let);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'CenaKarte' : vars.karta.CenaKarte,
+	'BrojKredKartice' : vars.karta.BrojKredKartice, 
+	'Klasa' : vars.karta.Klasa,
+	'Sediste' : vars.karta.Sediste,
+	'SifraKarte' : vars.karta.SifraKarte,
+	'Let' : vars.karta.Let
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="ff3a7d20-2fb3-4705-904d-a70442a85d61" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodata je nova karta!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f655b425-6be0-4065-b17d-09b339da054c" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="45c8236b-c634-41ab-8557-46705e236395" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Vec postoji Karta sa prosledjenim podacima!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="409" doc:name="Set Variable" doc:id="202c0559-298d-46df-a71c-00289462b40f" variableName="httpStatus" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="deleteAvion" doc:id="84721603-c3ac-4b46-a16c-308f080ec574" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="AvionID" doc:id="f2f66654-8ebd-4643-9125-b5aa42e25324" variableName="AvionID"/>
+		<db:select doc:name="Select" doc:id="202598ea-1c40-4c2e-bf4a-3a9047e1fa30" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Avion
+where AvionID = :AvionID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'AvionID' : vars.AvionID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="d8367dad-afa6-4467-b998-5e1b9fcb73e4" value="#[payload.AvionID]"/>
+		<db:delete doc:name="Delete" doc:id="bd980e4e-0c35-416d-984c-3e61a299b45a" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from avion
+where AvionID = :AvionID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'AvionID' : vars.AvionID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="217dcf0f-0180-4055-b9e9-47fa67f2cade" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Avion je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="3553caf6-4987-4d2c-a81e-8540496b7bf6" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="8435e8a9-d8ad-4b0b-87c1-72a96739df01" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji avion sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="51041397-0a08-4359-8426-91676ba934a2" variableName="httpStatus" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deleteSletanje" doc:id="b25a38a8-c7db-45d7-9e33-49449b18a5f5" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="SletanjeID" doc:id="161a2580-5d3e-4de1-9b3c-51d4affa0671" variableName="SletanjeID"/>
+		<db:select doc:name="Select" doc:id="04ff7fd5-4379-4f2e-b66d-3c80f065ebd7" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Sletanje
+where SletanjeID = :SletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'SletanjeID' : vars.SletanjeID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="46f0dcb4-3c0d-4277-9360-ad33cfc18534" value="#[payload.SletanjeID]"/>
+		<db:delete doc:name="Delete" doc:id="7dfd24d8-386f-4579-a4be-8e58e1aacb00" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Sletanje
+where SletanjeID = :SletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'SletanjeID' : vars.SletanjeID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="b263d5c3-9e36-498f-8f7d-c0a2d32b4e54" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Sletanje je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="25213f6e-17c2-4bc3-b25b-abbb053c40b8" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="b13b4f69-82a6-4cba-9428-269a4638f8d9" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji sletanje sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="5865d679-4971-4569-8b94-5e5bdb238db8" variableName="httpStatus" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deletePoletanje" doc:id="4c1d00d3-219a-40bc-9ab9-8b224db8f42e" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PoletanjeID" doc:id="9cfedc7b-15ce-47b6-807b-619ef6ea6d0d" variableName="PoletanjeID"/>
+		<db:select doc:name="Select" doc:id="fc61a596-aeac-4cfe-b916-43a03922f534" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Poletanje
+where PoletanjeID = :PoletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PoletanjeID' : vars.PoletanjeID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="8cadc030-990c-4707-aae8-4f5ad9b56c4d" value="#[payload.PoletanjeID]"/>
+		<db:delete doc:name="Delete" doc:id="9a2da5e9-f69e-4d57-a289-821937efe9a3" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Poletanje
+where PoletanjeID = :PoletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PoletanjeID' : vars.PoletanjeID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="f617ecf5-d29e-4d53-9c59-c96704b25b4b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Poletanje je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7d121d8d-128d-41aa-a092-e7739fa4ee9e" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="c104cb81-c90d-44cc-b524-ceea4dc60997" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji poletanje sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="fa7e7ba0-42a0-4d99-87b8-fc71d1ff7cb0" variableName="httpStatus" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deletePasos" doc:id="edf4ddc4-3f4f-4ef1-af3a-d566b18d0319" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PasosID" doc:id="4008010f-a235-4f00-9d9b-a287f49ee8fa" variableName="PasosID"/>
+		<db:select doc:name="Select" doc:id="d8fccdba-3fd9-4633-b425-59125a3c4ea8" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Pasos
+where PasosID = :PasosID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PasosID' : vars.PasosID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="3054bad1-d6ca-47ff-8c43-fd925cfce0a4" value="#[payload.PasosID]"/>
+		<db:delete doc:name="Delete" doc:id="fa808d0e-b95c-48f0-8135-70672016c3d0" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Pasos
+where PasosID = :PasosID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PasosID' : vars.PasosID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="2f371143-5574-475e-8509-3c83cb54ac5a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Pasos je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d0ccaf4d-6e5b-4cb3-9bcb-b9776229cab7" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="41adf339-2c2c-4b8e-ad6f-7117f2a279a8" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji pasos sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="28ac598e-0cfa-4800-a5a0-b294dfdff01e" variableName="httpStatus" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deleteLet" doc:id="2139aa9a-fcc3-4d16-8634-59182e16ee94" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="LetID" doc:id="f8230ac7-1390-49b5-9095-62d8d33210bd" variableName="LetID"/>
+		<db:select doc:name="Select" doc:id="b92cbcfc-3ac5-4c69-a9ff-f972733e9274" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Let
+where LetID = :LetID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'LetID' : vars.LetID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="0a3eb46b-f31f-47b4-9470-3be3eb7361b6" value="#[payload.LetID]"/>
+		<db:delete doc:name="Delete" doc:id="b92f3a1e-ede4-4ff4-bb99-3f70afc18ce2" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Let
+where LetID = :LetID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'LetID' : vars.LetID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="bd806c53-ef19-4cc5-9590-262a86f3ced7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Let je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c24aab2d-d22d-440b-b599-6231252fca3d" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="0d0c11f9-0fb5-4c75-8f2e-490934d139be" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji let sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="41862e8e-b515-4ad9-af18-f67732f81193" variableName="httpStatus" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deletePrtljag" doc:id="26148628-8b36-4fd0-962a-1b6f30c2cae3" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PrtljagID" doc:id="fb872bcb-6dd8-4d50-9a98-21b47f14356d" variableName="PrtljagID"/>
+		<db:select doc:name="Select" doc:id="082d7fbb-b637-4161-8d53-adaa3c22640d" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Prtljag
+where PrtljagID = :PrtljagID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PrtljagID' : vars.PrtljagID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="9026bc36-c9f6-4cb0-980a-8cbf8eb37470" value="#[payload.PrtljagID]"/>
+		<db:delete doc:name="Delete" doc:id="af9fcb8a-fc52-433d-ba82-2e4bcf5613c0" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Prtljag
+where PrtljagID = :PrtljagID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PrtljagID' : vars.PrtljagID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="70867117-482b-4b85-95bf-78ee808d4ecd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Prtljag je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f2a98f7a-1399-46a4-90bf-445416a3a85e" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="3834880d-1da5-4a82-b4f6-aebcaf862f72" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji prtljag sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="76dfde36-eb98-4990-999e-343875f7180c" variableName="httpStatus" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deleteKarta" doc:id="847282f6-4751-4b09-afb8-1aa4a7217ef5" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="KartaID" doc:id="d5d19d39-197b-401a-827b-e89552f810a3" variableName="KartaID"/>
+		<db:select doc:name="Select" doc:id="110f88b6-ccc7-4fd5-ba2f-ad34f61a1a6f" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Karta
+where KartaID = :KartaID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'KartaID' : vars.KartaID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="37562a40-5064-45bc-a4fd-3979780f7652" value="#[payload.KartaID]"/>
+		<db:delete doc:name="Delete" doc:id="ef827bfa-12d5-4e7b-ac86-cff47ce9c074" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Karta
+where KartaID = :KartaID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'KartaID' : vars.KartaID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="70c8f056-dfa3-4cbb-9b1f-d1abac334647" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Karta je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="357b61fa-77a0-4745-a896-07ce8aa52fe3" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="ef5d44c8-5759-402f-9f31-7d8c23b912c4" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Ne postoji karta sa prosledjenim ID-jem!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="404" doc:name="httpStatus" doc:id="f60eaea0-097b-473e-a9b0-bb3142e8231c" variableName="httpStatus" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="deletePutnik" doc:id="5f49fb67-4ac0-49b8-b909-534817b8c575" >
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PutnikID" doc:id="e444a66f-a438-4b1e-89a6-12c281726ce8" variableName="PutnikID"/>
+		<db:select doc:name="Select" doc:id="06eaffc6-8d87-4547-94ce-74d3228380d2" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * 
+from Putnik
+where PutnikID = :PutnikID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PutnikID' : vars.PutnikID}]]]></db:input-parameters>
+		</db:select>
+		<validation:is-not-null doc:name="Is not null" doc:id="6dcc0bca-00fe-49d0-90b7-51c422728c64" value="#[payload.PutnikID]"/>
+		<db:delete doc:name="Delete" doc:id="08e24431-0a5d-46f4-9298-c99d0761f4a9" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Putnik
+where PutnikID = :PutnikID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PutnikID' : vars.PutnikID}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="52f931c3-c9fa-40e2-8303-2d3f56217f62" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Putnik je izbrisan!'
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="updateAvion" doc:id="f8c2654f-7a55-4a5a-8763-f819cabe3925" >
+		<set-variable value="#[message.payload]" doc:name="Avion" doc:id="5dbfe01a-4a11-4276-9281-05ce42c6cf28" variableName="avion"/>
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="AvionID" doc:id="44d924ce-51f1-4596-a47e-64203d0e906f" variableName="AvionID"/>
+		<db:select doc:name="Select" doc:id="c7d7003b-46b6-4fdc-8e65-6b974e1aeccb" config-ref="Database_Config">
+			<db:sql ><![CDATA[select *
+from Avion
+where AvionID = :AvionID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'AvionID' : vars.AvionID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="def671c8-9464-40af-adf6-43ad88400d68" >
+			<when expression="#[payload.AvionID != null]">
+				<db:select doc:name="Select" doc:id="ac7f0b11-e599-4ec7-a09f-02e1790f51f5" config-ref="Database_Config">
+					<db:sql ><![CDATA[select * 
+from avion
+where Model = :Model and BrojLeta = :BrojLeta and
+	  PutniciEconomy = :PutniciEconomy and PutniciBusiness = :PutniciBusiness and
+	  BrojClanovaPosade = :BrojClanovaPosade and Vlasnik =: Vlasnik
+	  ]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Model' : vars.avion.Model,
+	'BrojLeta' : vars.avion.BrojLeta, 
+	'PutniciEconomy' : vars.avion.PutniciEconomy,
+	'PutniciBusiness' : vars.avion.PutniciBusiness, 
+	'BrojClanovaPosade' : vars.avion.BrojClanovaPosade, 
+	'Vlasnik' : vars.avion.Vlasnik 
+	
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="f1a864b6-fb3c-4e2a-8efd-09a33791e8e1" value="#[payload.AvionID]"/>
+				<db:update doc:name="Update" doc:id="62323461-0223-4c3b-aaa2-9e284c7f78fd" config-ref="Database_Config">
+					<db:sql ><![CDATA[update Avion
+set Model = :Model, BrojLeta = :BrojLeta,
+	PutniciEconomy = :PutniciEconomy, PutniciBusiness = :PutniciBusiness,
+	BrojClanovaPosade = :BrojClanovaPosade, Vlasnik = :Vlasnik
+where AvionID = :AvionID
+	  ]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'AvionID' : vars.AvionID,
+	'Model' : vars.avion.Model,
+	'BrojLeta' : vars.avion.BrojLeta,
+	'PutniciEconomy' : vars.avion.PutniciEconomy, 
+	'PutniciBusiness' : vars.avion.PutniciBusiness,
+	'BrojClanovaPosade' : vars.avion.BrojClanovaPosade, 
+	'Vlasnik' : vars.avion.Vlasnik
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="d8d29e4f-4ae4-4e58-a1ba-ff18dd61f513" variableName="httpStatus"/>
+				<ee:transform doc:name="Transform Message" doc:id="32aeb4ef-ca38-4ebf-9b47-7170eb07fdd5" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Avion je izmenjen!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="b049ee5b-aa66-4e95-bca9-6f114a45a7e6" config-ref="Database_Config">
+					<db:sql ><![CDATA[INSERT INTO Avion(Model,BrojLeta, PutniciEconomy, PutniciBusiness, BrojClanovaPosade, Vlasnik) 
+values(:Model,:BrojLeta,:PutniciEconomy,:PutniciBusiness,:BrojClanovaPosade, :Vlasnik);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Model' : vars.avion.Model,
+	'BrojLeta' : vars.avion.BrojLeta, 
+	'PutniciEconomy' : vars.avion.PutniciEconomy,
+	'PutniciBusiness' : vars.avion.PutniciBusiness,
+	'BrojClanovaPosade' : vars.avion.BrojClanovaPosade, 
+	'Vlasnik' : vars.avion.Vlasnik
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="7f8a8701-f381-49f8-ba79-fe11ada41833" variableName="httpStatus"/>
+				<ee:transform doc:name="Transform Message" doc:id="c7c5b86a-306f-4e4f-bd34-c22a2276c93b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi avion!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="updatePoletanje" doc:id="9afbdc45-b265-485e-9caf-6c6c2633ae10" >
+		<set-variable value="#[message.payload]" doc:name="Poletanje" doc:id="f34e644a-a129-45d4-8122-555721a12e40" variableName="poletanje" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PoletanjeID" doc:id="0fab56ff-84f6-4b4e-85e6-18b54a5f457d" variableName="PoletanjeID" />
+		<db:select doc:name="Select" doc:id="b4e3eaea-c6e5-44af-b292-d5c4900a2913" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select *
+from Poletanje
+where PoletanjeID = :PoletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PoletanjeID' : vars.PoletanjeID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="e35198b3-a5ba-4158-a0d0-c10284ea033a" >
+			<when expression="#[payload.PoletanjeID != null]" >
+				<db:select doc:name="Select" doc:id="2b588035-5ff5-45b9-987f-296f4ca15c33" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select *
+from Poletanje
+where Grad = :Grad and Datum = :Datum and Gate = :Gate]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.poletanje.Grad,
+	'Datum' : vars.poletanje.Datum, 
+	'Gate' : vars.poletanje.Gate
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="369d819d-5638-4fcb-bf56-c318504bb02b" value="#[payload.PoletanjeID]" />
+				<db:update doc:name="Update" doc:id="c17820c5-cb57-46e6-89ae-3aa1b3b1b95d" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update Poletanje
+set Grad=:Grad, Datum=:Datum, Gate=:Gate
+where PoletanjeID=:PoletanjeID]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'PoletanjeID' : vars.PoletanjeID,
+	'Grad' : vars.poletanje.Grad,
+	'Datum' : vars.poletanje.Datum,
+	'Gate' : vars.poletanje.Gate
+	
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="0df9a404-26f9-41d0-a7d4-1200c69a50a4" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="652de7e5-611a-4426-9659-7db3308887a3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Poletanje je izmenjeno!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="10e8c880-a665-4fde-b0ba-72f000b048a3" config-ref="Database_Config" >
+					<db:sql ><![CDATA[INSERT INTO Poletanje(Grad, Datum, Gate) values(:Grad,:Datum,:Gate);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.poletanje.Grad,
+	'Datum' : vars.poletanje.Datum, 
+	'Gate' : vars.poletanje.Gate,
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="70dd42a8-da1c-44da-829a-b50cfc3b2e05" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="f27fc1de-d563-4865-bd4d-901b91b57f77" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodato je novo poletanje!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="updateSletanje" doc:id="17758ae9-b2ca-4c96-864a-cfbdda7a3bde" >
+		<set-variable value="#[message.payload]" doc:name="Sletanje" doc:id="c7ecabef-869f-4f2f-b5b5-12d82b99a3dd" variableName="sletanje" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="SletanjeID" doc:id="ddf2c796-0730-42bb-932c-2fe4903e661a" variableName="SletanjeID" />
+		<db:select doc:name="Select" doc:id="08f9838b-de7a-4be4-b3d2-b2c836bc1336" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select *
+from Sletanje
+where SletanjeID = :SletanjeID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'SletanjeID' : vars.SletanjeID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="0e3e1171-3ee8-4196-b360-bc5997831b1d" >
+			<when expression="#[payload.SletanjeID != null]" >
+				<db:select doc:name="Select" doc:id="366da5ac-bed7-4f56-a59f-35dfbabe468f" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select *
+from Sletanje
+where Grad = :Grad and Datum = :Datum and Gate = :Gate]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.sletanje.Grad,
+	'Datum' : vars.sletanje.Datum, 
+	'Gate' : vars.sletanje.Gate
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="6bfc580c-8357-492d-af04-87968dff5bb1" value="#[payload.SletanjeID]" />
+				<db:update doc:name="Update" doc:id="f2fe5cd2-ed50-43fd-a0a4-13a123cb8378" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update Sletanje
+set Grad=:Grad, Datum=:Datum, Gate=:Gate
+where SletanjeID=:SletanjeID]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'SletanjeID' : vars.SletanjeID,
+	'Grad' : vars.sletanje.Grad,
+	'Datum' : vars.sletanje.Datum,
+	'Gate' : vars.sletanje.Gate
+	
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="86090157-d65c-4e13-a637-07645a19f320" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="229b864e-4e73-4f23-b331-b22381ca1953" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Sletanje je izmenjeno!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="c3eecc52-9802-419b-ab7c-89ec2588d315" config-ref="Database_Config" >
+					<db:sql ><![CDATA[INSERT INTO Sletanje(Grad, Datum, Gate) values(:Grad,:Datum,:Gate);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Grad' : vars.sletanje.Grad,
+	'Datum' : vars.sletanje.Datum, 
+	'Gate' : vars.sletanje.Gate,
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="0bd38e27-0de8-40e1-a925-90162cd8476e" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="61389957-9eca-46e2-8275-f7d2386514c6" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodato je novo sletanje!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="updatePasos" doc:id="76a397f7-a1b3-4cf8-80d6-8e4411dc45ab" >
+		<set-variable value="#[message.payload]" doc:name="Pasos" doc:id="df7088e4-a05d-4c07-87e6-d52d843188c6" variableName="pasos" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PasosID" doc:id="7480a2be-ba92-45de-afbe-13d34cd7f3e2" variableName="PasosID" />
+		<db:select doc:name="Select" doc:id="e608632a-14c4-4b50-80c5-cbe1ea3938e1" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select *
+from Pasos
+where PasosID = :PasosID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PasosID' : vars.PasosID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="b4af0402-c9bd-4d34-909f-325eed9aaeef" >
+			<when expression="#[payload.PasosID != null]" >
+				<db:select doc:name="Select" doc:id="8f7fc1cc-bb7f-4f90-b110-f366d182f917" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select *
+from Pasos
+where Viza = :Viza and Ime = :Ime and Drzava = :Drzava and Prezime=:Prezime and Godine=:Godine]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Viza' : vars.pasos.Viza,
+	'Ime' : vars.pasos.Ime, 
+	'Drzava' : vars.pasos.Drzava,
+	'Prezime' : vars.pasos.Prezime,
+	'Godine' : vars.pasos.Godine
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="fdecdf73-dbcd-4f9d-b688-7ac636188afc" value="#[payload.PasosID]" />
+				<db:update doc:name="Update" doc:id="54e73a91-5ea7-460f-a475-e5e304ae0e13" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update Pasos
+set Viza=:Viza, Ime=:Ime, Drzava=:Drzava, Prezime=:Prezime, Godine=:Godine
+where PasosID=:PasosID]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'PasosID' : vars.PasosID,
+	'Viza' : vars.pasos.Viza,
+	'Ime' : vars.pasos.Ime,
+	'Drzava' : vars.pasos.Drzava,
+	'Prezime' : vars.pasos.Prezime,
+	'Godine' : vars.pasos.Godine
+	
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="a4dd169e-43e1-4210-ab87-e0715f05a806" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="7ffa6295-2373-4f6d-9beb-adee75f2a516" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Pasos je izmenjen!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="760b3365-0c67-47c6-9bb0-5c97a8f3cf8a" config-ref="Database_Config" >
+					<db:sql ><![CDATA[INSERT INTO Pasos(Viza, Ime, Drzava, Prezime, Godine) 
+values(:Viza,:Ime,:Drzava,:Prezime,:Godine);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Viza' : vars.pasos.Viza,
+	'Ime' : vars.pasos.Ime, 
+	'Drzava' : vars.pasos.Drzava,
+	'Prezime' : vars.pasos.Prezime,
+	'Godine' : vars.pasos.Godine
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="4c295c6b-323a-424a-8df7-881430d59615" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="c4213d21-9853-4021-84fe-f5ad185c6452" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi pasos!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="updatePutnik" doc:id="93d1cf35-e56a-470e-9007-33abf2b6b510" >
+		<set-variable value="#[message.payload]" doc:name="Putnik" doc:id="32e3e2d7-de9a-4f0d-bb81-1e337a5de30d" variableName="putnik" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PutnikID" doc:id="5a75fa67-99b7-4242-8671-3118042957a5" variableName="PutnikID" />
+		<db:select doc:name="Select" doc:id="b2596a38-b81a-4eb2-84a2-c458d444de6c" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select *
+from Putnik
+where PutnikID = :PutnikID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PutnikID' : vars.PutnikID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="d0869a3c-a916-4f8d-abf3-47eb337d88a4" >
+			<when expression="#[payload.PutnikID != null]" >
+				<db:select doc:name="Select" doc:id="3f34d00c-9d6c-4172-909b-946be5d89d86" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select *
+from Putnik
+where BrojTel = :BrojTel and Ime = :Ime and EMail = :EMail and Prezime=:Prezime and Godine=:Godine
+and JMBG=:JMBG and Prtljag=:Prtljag and Pasos=:Pasos and Karta=:Karta]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'BrojTel' : vars.putnik.BrojTel,
+	'Ime' : vars.putnik.Ime, 
+	'EMail' : vars.putnik.EMail,
+	'Prezime' : vars.putnik.Prezime,
+	'Godine' : vars.putnik.Godine,
+	'JMBG' : vars.putnik.JMBG,
+	'Prtljag' : vars.putnik.Prtljag,
+	'Pasos' : vars.putnik.Pasos,
+	'Karta' : vars.putnik.Karta
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="28d999a7-4041-4400-a811-4f70173542e1" value="#[payload.PutnikID]" />
+				<db:update doc:name="Update" doc:id="a45d31d0-053f-4d05-9bbd-6fa1ea5f9fcf" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update Putnik
+set EMail=:EMail, Ime=:Ime, JMBG=:JMBG, Prezime=:Prezime, Godine=:Godine, Karta=:Karta, Prtljag=:Prtljag, Pasos=:Pasos, BrojTel=:BrojTel
+where PutnikID=:PutnikID]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'PutnikID' : vars.PutnikID,
+	'EMail' : vars.putnik.EMail,
+	'Ime' : vars.putnik.Ime,
+	'Drzava' : vars.putnik.Drzava,
+	'Prezime' : vars.putnik.Prezime,
+	'Godine' : vars.putnik.Godine,
+	'JMBG' : vars.putnik.JMBG,
+	'Karta' : vars.putnik.Karta,
+	'Prtljag' : vars.putnik.Prtljag,
+	'Pasos' : vars.putnik.Pasos,
+	'BrojTel' : vars.putnik.BrojTel
+	
+	
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="3182467f-5cae-4de7-98e1-e6bbdd74bb67" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="ebac1389-ac8f-4ffb-8e88-93a1b8d166a2" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Putnik je izmenjen!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="b313af32-46f5-4641-af12-ac25d569e04d" config-ref="Database_Config" >
+					<db:sql ><![CDATA[INSERT INTO Putnik(Ime, Prezime, BrojTel, EMail, Godine, JMBG, Prtljag, Pasos, Karta) 
+values(:Ime,:Prezime,:BrojTel,:EMail,:Godine,:JMBG,:Prtljag,:Pasos,:Karta);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'Ime' : vars.putnik.Ime,
+	'Prezime' : vars.putnik.Prezime, 
+	'BrojTel' : vars.putnik.BrojTel,
+	'EMail' : vars.putnik.EMail,
+	'Godine' : vars.putnik.Godine,
+	'JMBG' : vars.putnik.JMBG,
+	'Prtljag' : vars.putnik.Prtljag,
+	'Pasos' : vars.putnik.Pasos,
+	'Karta' : vars.putnik.Karta
+	
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="6c89853f-a9b6-42b1-866b-450f84e126fe" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="e49ae56e-ffc4-4264-8c1f-6c08a72fb0fe" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi putnik!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="updatePrtljag" doc:id="c0d6c623-0cb3-4610-830e-2dd31bb426e6" >
+		<set-variable value="#[message.payload]" doc:name="Prtljag" doc:id="86f45395-e9dc-4186-b604-f45b82f330ee" variableName="prtljag" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="PrtljagID" doc:id="eeb6c177-aea3-4650-8537-1b9dfebd4a23" variableName="PrtljagID" />
+		<db:select doc:name="Select" doc:id="9e0390da-6dd2-4fc1-845b-2dea19833cb3" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select *
+from Prtljag
+where PrtljagID = :PrtljagID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'PrtljagID' : vars.PrtljagID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="9d21b9e2-bed6-4430-b134-d282672e2e42" >
+			<when expression="#[payload.PrtljagID != null]" >
+				<db:select doc:name="Select" doc:id="105598eb-73c2-4513-899d-c6bed1419b25" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select *
+from Prtljag
+where RucniPrtljag = :RucniPrtljag and Tezina = :Tezina and PredjenaKontrola = :PredjenaKontrola and SifraPrtljag=:SifraPrtljag]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'RucniPrtljag' : vars.prtljag.RucniPrtljag,
+	'Tezina' : vars.prtljag.Tezina, 
+	'PredjenaKontrola' : vars.prtljag.PredjenaKontrola,
+	'SifraPrtljag' : vars.prtljag.SifraPrtljag
+
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="e4b71aba-2cc2-4aef-b87f-3156c086328b" value="#[payload.PrtljagID]" />
+				<db:update doc:name="Update" doc:id="5bee7e2a-ce30-4b16-97ed-6c7a44e56c91" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update Prtljag
+set Tezina=:Tezina, PredjenaKontrola=:PredjenaKontrola, SifraPrtljag=:SifraPrtljag, RucniPrtljag=:RucniPrtljag
+where PrtljagID=:PrtljagID]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'PrtljagID' : vars.PrtljagID,
+	'Tezina' : vars.prtljag.Tezina,
+	'PredjenaKontrola' : vars.prtljag.PredjenaKontrola,
+	'SifraPrtljag' : vars.prtljag.SifraPrtljag,
+	'RucniPrtljag' : vars.prtljag.RucniPrtljag
+	
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="ed182398-0c1a-4f1f-8735-0bfeed4dd18c" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="619c9b85-bfab-4ab9-9ed5-e6184e6f66b0" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Prtljag je izmenjen!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="7e8d5a2c-0ab0-48c5-8ab8-c43e3b554e16" config-ref="Database_Config" >
+					<db:sql ><![CDATA[INSERT INTO Prtljag(RucniPrtljag, Tezina, PredjenaKontrola, SifraPrtljag) 
+values(:RucniPrtljag, :Tezina, :PredjenaKontrola,:SifraPrtljag);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'RucniPrtljag' : vars.prtljag.RucniPrtljag,
+	'Tezina' : vars.prtljag.Tezina, 
+	'PredjenaKontrola' : vars.prtljag.PredjenaKontrola,
+	'SifraPrtljag' : vars.prtljag.SifraPrtljag
+	
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="0f7e674e-3c0e-45bf-8237-844198b87a05" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="dc3859b1-aacc-4765-86fc-01c3bec681a7" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi prtljag!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="updateKarta" doc:id="96b7d46c-0a20-46c8-a67a-0b62d2574948" >
+		<set-variable value="#[message.payload]" doc:name="Karta" doc:id="44006dda-8f63-435b-83f4-8c52bb85c54c" variableName="karta" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="KartaID" doc:id="5d0efd9e-074c-4e0e-b699-25fca35a45df" variableName="KartaID" />
+		<db:select doc:name="Select" doc:id="40f68d69-f4cc-4227-bd5e-9cf525a2bd26" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select *
+from Karta
+where KartaID = :KartaID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'KartaID' : vars.KartaID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="cd29a328-d97a-4450-a475-3f9046150950" >
+			<when expression="#[payload.KartaID != null]" >
+				<db:select doc:name="Select" doc:id="44b9af3e-5d3a-41df-873b-2161b86c78a6" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select *
+from Karta
+where CenaKarte = :CenaKarte and BrojKredKartice = :BrojKredKartice and Klasa = :Klasa and Sediste=:Sediste and SifraKarte=:SifraKarte and Let=:Let]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'CenaKarte' : vars.karta.CenaKarte,
+	'BrojKredKartice' : vars.karta.BrojKredKartice, 
+	'Klasa' : vars.karta.Klasa,
+	'Sediste' : vars.karta.Sediste,
+	'SifraKarte' : vars.karta.SifraKarte,
+	'Let' : vars.karta.Let
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="5ecb134c-4b16-440b-b81c-430d6d5fdf28" value="#[payload.KartaID]" />
+				<db:update doc:name="Update" doc:id="344e9d1e-c098-444e-8a48-a63abe7c78cb" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update Karta
+set CenaKarte=:CenaKarte, BrojKredKartice=:BrojKredKartice, Klasa=:Klasa, SifraKarte=:SifraKarte, Sediste=:Sediste, Let=:Let
+where KartaID=:KartaID]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'KartaID' : vars.KartaID,
+	'CenaKarte' : vars.karta.CenaKarte,
+	'BrojKredKartice' : vars.karta.BrojKredKartice,
+	'Klasa' : vars.karta.Klasa,
+	'SifraKarte' : vars.karta.SifraKarte,
+	'Sediste' : vars.karta.Sediste,
+	'Let' : vars.karta.Let	
+	
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="6c177af4-c5b5-4083-8f0e-e9f5d05b2bb8" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="ee83bacb-912b-4f4a-8c4b-c6c22598d265" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Karta je izmenjena!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="b5254ca5-ad4a-4f6c-82fc-910ece2fc6e1" config-ref="Database_Config" >
+					<db:sql ><![CDATA[INSERT INTO Karta(CenaKarte, BrojKredKartice, Klasa, Sediste, SifraKarte, Let) values(:CenaKarte,:BrojKredKartice,:Klasa,:Sediste,:SifraKarte,:Let);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'CenaKarte' : vars.karta.CenaKarte,
+	'BrojKredKartice' : vars.karta.BrojKredKartice, 
+	'Klasa' : vars.karta.Klasa,
+	'Sediste' : vars.karta.Sediste,
+	'SifraKarte' : vars.karta.SifraKarte,
+	'Let' : vars.karta.Let
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="d6538187-1705-4d2b-8d4b-fd3820d8474e" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="a54611c8-7bc7-4332-8aae-fe1520c767fd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodata je nova karta!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="updateLet" doc:id="4f210c53-a4fa-46d7-9765-6fa1a220c119" >
+		<set-variable value="#[message.payload]" doc:name="Let" doc:id="14f7bfab-1e2d-4fdc-938c-4e5dce22e24a" variableName="let" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="LetID" doc:id="5e1fcebc-aa2b-4035-bc03-dcf0b856d19b" variableName="LetID" />
+		<db:select doc:name="Select" doc:id="69a276b3-bab3-411a-9e4f-84b76a0f0222" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select *
+from Let
+where LetID = :LetID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'LetID' : vars.LetID}]]]></db:input-parameters>
+		</db:select>
+		<choice doc:name="Choice" doc:id="5b7bd884-c2a3-41d0-bb72-6c6d40fc5a96" >
+			<when expression="#[payload.LetID != null]" >
+				<db:select doc:name="Select" doc:id="c463454f-76a4-4d1c-8df5-3889a2ba067c" config-ref="Database_Config" >
+					<db:sql ><![CDATA[select *
+from Let
+where NazivLinije = :NazivLinije and SifraLeta = :SifraLeta and Avion = :Avion and Poletanje=:Poletanje and Sletanje=:Sletanje]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'NazivLinije' : vars.karta.NazivLinije,
+	'SifraLeta' : vars.karta.SifraLeta, 
+	'Avion' : vars.karta.Avion,
+	'Poletanje' : vars.karta.Poletanje,
+	'Sletanje' : vars.karta.Sletanje
+	
+}]]]></db:input-parameters>
+				</db:select>
+				<validation:is-null doc:name="Is null" doc:id="85e58764-158d-4866-b97b-4861cd3731b9" value="#[payload.LetID]" />
+				<db:update doc:name="Update" doc:id="6249bf25-4032-482b-b6c7-6a7b8c508daf" config-ref="Database_Config" >
+					<db:sql ><![CDATA[update Let
+set NazivLinije=:NazivLinije, SifraLeta=:SifraLeta, Avion=:Avion, Poletanje=:Poletanje, Sletanje=:Sletanje
+where LetID=:LetID]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'LetID' : vars.LetID,
+	'NazivLinije' : vars.let.NazivLinije,
+	'SifraLeta' : vars.let.SifraLeta,
+	'Avion' : vars.let.Avion,
+	'Poletanje' : vars.let.Poletanje,
+	'Sletanje' : vars.let.Sletanje
+	
+}]]]></db:input-parameters>
+				</db:update>
+				<set-variable value="200" doc:name="httpStatus" doc:id="1db7a7eb-4077-4975-a34e-b4591e43083f" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="3953134f-20c6-458f-979f-9ccbc4ac533e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Let je izmenjen!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="a8e503cc-e49c-4298-b36c-1397e230a5a8" config-ref="Database_Config" >
+					<db:sql ><![CDATA[INSERT INTO Let(NazivLinije, SifraLeta, Avion, Poletanje, Sletanje) values(:NazivLinije,:SifraLeta,:Avion,:Poletanje,:Sletanje);
+]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'NazivLinije' : vars.let.NazivLinije,
+	'SifraLeta' : vars.let.SifraLeta, 
+	'Avion' : vars.let.Avion,
+	'Poletanje' : vars.let.Poletanje,
+	'Sletanje' : vars.putnik.Sletanje,
+	
+}]]]></db:input-parameters>
+				</db:insert>
+				<set-variable value="201" doc:name="httpStatus" doc:id="37da2593-fb55-4754-b505-b699e66c00d1" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="64938beb-d120-4031-bc3b-91fa858f0984" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: 'Dodat je novi let!'
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

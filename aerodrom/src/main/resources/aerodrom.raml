@@ -1,0 +1,425 @@
+#%RAML 1.0
+title: Aerodrom
+
+types:
+  Prtljag: !include /dataTypes/PrtljagDataType.raml
+  Avion: !include /dataTypes/AvionDataType.raml
+  Karta: !include /dataTypes/KartaDataType.raml
+  Let: !include /dataTypes/LetDataType.raml
+  Pasos: !include /dataTypes/PasosDataType.raml
+  Poletanje: !include /dataTypes/PoletanjeDataType.raml
+  Sletanje: !include /dataTypes/SletanjeDataType.raml
+  Putnik: !include /dataTypes/PutnikDataType.raml
+
+/prtljag:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Prtljag[]
+            examples:
+              output: !include /examples/Prtljag/PrtljagExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Prtljag
+        examples:
+          input: !include /examples/Prtljag/PrtljagNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Prtljag je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Prtljag
+              examples:
+                output: !include /examples/Prtljag/PrtljagIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Prtljag je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Prtljag
+          examples:
+            input: !include /examples/Prtljag/PrtljagNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Prtljag azuriran (ali ne zapravo)
+
+
+/avion:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Avion[]
+            examples:
+              output: !include /examples/Avion/AvionExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Avion
+        examples:
+          input: !include /examples/Avion/AvionNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Avion je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Avion
+              examples:
+                output: !include /examples/Avion/AvionIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Avion je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Avion
+          examples:
+            input: !include /examples/Avion/AvionNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Avion azuriran (ali ne zapravo)
+
+/karta:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Karta[]
+            examples:
+              output: !include /examples/Karta/KartaExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Karta
+        examples:
+          input: !include /examples/Karta/KartaNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Karta je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Karta
+              examples:
+                output: !include /examples/Karta/KartaIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Karta je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Karta
+          examples:
+            input: !include /examples/Karta/KartaNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Karta azuriran (ali ne zapravo)
+
+/let:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Let[]
+            examples:
+              output: !include /examples/Let/LetExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Let
+        examples:
+          input: !include /examples/Let/LetNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Let je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Let
+              examples:
+                output: !include /examples/Let/LetIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Let je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Let
+          examples:
+            input: !include /examples/Let/LetNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Let azuriran (ali ne zapravo)                
+
+
+/pasos:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Pasos[]
+            examples:
+              output: !include /examples/Pasos/PasosExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Pasos
+        examples:
+          input: !include /examples/Pasos/PasosNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Pasos je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Pasos
+              examples:
+                output: !include /examples/Pasos/PasosIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Pasos je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Pasos
+          examples:
+            input: !include /examples/Pasos/PasosNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Pasos azuriran (ali ne zapravo)                  
+
+/poletanje:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Poletanje[]
+            examples:
+              output: !include /examples/Poletanje/PoletanjeExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Poletanje
+        examples:
+          input: !include /examples/Poletanje/PoletanjeNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Poletanje je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Poletanje
+              examples:
+                output: !include /examples/Poletanje/PoletanjeIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Poletanje je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Poletanje
+          examples:
+            input: !include /examples/Poletanje/PoletanjeNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Poletanje azuriran (ali ne zapravo)                 
+
+/putnik:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Putnik[]
+            examples:
+              output: !include /examples/Putnik/PutnikExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Putnik
+        examples:
+          input: !include /examples/Putnik/PutnikNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Putnik je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Putnik
+              examples:
+                output: !include /examples/Putnik/PutnikIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Putnik je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Putnik
+          examples:
+            input: !include /examples/Putnik/PutnikNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Putnik azuriran (ali ne zapravo)                    
+
+/sletanje:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Sletanje[]
+            examples:
+              output: !include /examples/Sletanje/SletanjeExample.raml
+
+  post:
+    body:
+      application/json:
+        type: Sletanje
+        examples:
+          input: !include /examples/Sletanje/SletanjeNoIDExample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            examples:
+              message: Sletanje je dodat (ali ne zapravo)
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Sletanje
+              examples:
+                output: !include /examples/Sletanje/SletanjeIDExample.raml
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Sletanje je obrisan (ali ne zapravo)
+    put:
+      body:
+        application/json:
+          type: Sletanje
+          examples:
+            input: !include /examples/Sletanje/SletanjeNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              examples:
+                message: Sletanje azuriran (ali ne zapravo)   
+
+            
+

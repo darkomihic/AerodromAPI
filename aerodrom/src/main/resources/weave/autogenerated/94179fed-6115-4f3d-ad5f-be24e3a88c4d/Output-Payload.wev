@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_94179fed_6115_4f3d_ad5f_be24e3a88c4d_Output_Payload = Array<{  BrojKredKartice?: String,   KartaID?: Number,   CenaKarte?: Number,   SifraKarte: String,   let?: {    NazivLinije?: String,     sletanje?: {      Datum: String,       SletanjeID?: Number,       Gate: String,       Grad: String,       _?: Any    },     LetID?: Number,     poletanje?: {      PoletanjeID?: Number,       Datum: String,       Gate: String,       Grad: String,       _?: Any    },     avion?: {      AvionID?: Number,       BrojClanovaPosade?: Number,       BrojLeta: String,       PutniciBusiness?: Number,       Model?: String,       Vlasnik?: String,       PutniciEconomy?: Number,       _?: Any    },     SifraLeta: String,     _?: Any  },   Sediste?: Number,   Klasa?: String,   _?: Any}>
+

@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_8b8eeaff_6984_447d_900c_bdb5397da0af_Output_Payload = Array<{|  PutnikID: Number,   Ime?: String,   Prezime?: String,   BrojTel?: String,   EMail?: String,   Godine: Number,   JMBG?: String,   Prtljag?: Number,   Pasos?: Number,   Karta?: Number|}>
+

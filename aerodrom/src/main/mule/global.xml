@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5fe6c38f-4691-4208-8a7b-223b8b02ff0c" >
+		<http:listener-connection host="0.0.0.0" port="8081"/>
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="61d7a997-9b1e-4b72-8744-8fdaf19aca9e" file="config.yaml" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="7a64df92-16e7-48b6-94a3-6ae77e2b2d5b" >
+		<db:my-sql-connection host="${db.Host}" port="${db.Port}" user="${db.User}" password="Mule12345" database="${db.Database}" />
+	</db:config>
+	<file:config name="bulgarianerp" doc:name="File Config" doc:id="bab4db37-2fed-4d6e-a562-fcbae912ca3e" >
+		<file:connection workingDir="C:\Users\mihic\AnypointStudio\studio-workspace\aerodrom\src\main\resources\bulgarianerp" />
+	</file:config>
+	<file:config name="internalerp" doc:name="File Config" doc:id="36c01bbb-e901-414d-945a-92d1d281f7ba" >
+		<file:connection workingDir="C:\Users\mihic\AnypointStudio\studio-workspace\aerodrom\src\main\resources\internalerp" />
+	</file:config>
+</mule>

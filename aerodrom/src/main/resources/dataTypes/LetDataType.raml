@@ -1,0 +1,34 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  LetID?: integer
+  NazivLinije?: string
+  SifraLeta: string
+  avion:
+    type: object
+    required: false
+    properties:
+      AvionID?: integer
+      Model?: string
+      BrojLeta: string
+      PutniciEconomy?: integer
+      PutniciBusiness?: integer
+      BrojClanovaPosade?: integer
+      Vlasnik?: string
+  poletanje:
+    type: object
+    required: false
+    properties:
+      PoletanjeID?: integer
+      Grad: string
+      Datum: string
+      Gate: string
+  sletanje:
+    type: object
+    required: false
+    properties:
+      SletanjeID?: integer
+      Grad: string
+      Datum: string
+      Gate: string

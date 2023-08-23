@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_b17c223f_1c92_418a_9856_1ac8e05f801f_Output_Payload = Array<{|  SletanjeID: Number,   Grad: String,   Datum: String,   Gate: String|}>
+

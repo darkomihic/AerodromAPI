@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_da7f9617_7388_4ee0_8e52_36618df205e4_Output_Payload = Array<{  PasosID?: Number,   Ime?: String,   Viza: Boolean,   Godine: Number,   Drzava: String,   Prezime?: String,   _?: Any}>
+

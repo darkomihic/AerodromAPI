@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_9795eee6_e4b4_4a9d_b3ca_d819fb5c6a7b_Output_Payload = Array<{|  PrtljagID: Number,   RucniPrtljag: Boolean,   Tezina: Number,   PredjenaKontrola: Boolean,   SifraPrtljag: String|}>
+

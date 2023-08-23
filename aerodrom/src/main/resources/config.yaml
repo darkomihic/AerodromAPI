@@ -1,0 +1,9 @@
+http:
+  port: "8081" 
+  
+db: 
+  Host: "localhost"
+  Port: "3306"
+  User: darko
+  Password: Mule12345
+  Database: "Aerodrom"

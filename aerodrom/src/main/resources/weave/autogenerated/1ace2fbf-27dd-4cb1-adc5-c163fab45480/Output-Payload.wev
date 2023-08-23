@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_1ace2fbf_27dd_4cb1_adc5_c163fab45480_Output_Payload = Array<{  AvionID?: Number,   BrojClanovaPosade?: Number,   BrojLeta: String,   PutniciBusiness?: Number,   Model?: String,   Vlasnik?: String,   PutniciEconomy?: Number,   _?: Any}>
+

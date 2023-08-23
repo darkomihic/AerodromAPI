@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_55496d19_9b83_4ad5_81af_7156534061e3_Output_Payload = Array<{|  KartaID: Number,   CenaKarte?: Number,   BrojKredKartice?: String,   Klasa?: String,   Sediste?: Number,   SifraKarte: String,   Let?: Number|}>
+
